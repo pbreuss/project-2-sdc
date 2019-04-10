@@ -131,8 +131,10 @@ The resulting "warped" image looks like this:
 
 ![binary_warped.jpg](./output_images/binary_warped.jpg)
 
-# coming soon
 # STEP 5 - Detect lane pixels and fit to find the lane boundary
+
+![Figure_1.png](./output_images/Figure_1.png)
+
 
 # STEP 6 - Determine the curvature of the lane and vehicle position with respect to center
 
