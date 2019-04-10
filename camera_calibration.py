@@ -1,14 +1,18 @@
+# This program is the first step of project 2: Advanced Lane Finding
+# STEP 1: Compute the camera calibration matrix and distortion coefficients given a set of chessboard images.
+
 import numpy as np
 import cv2
 import glob
 import matplotlib.pyplot as plt
-#%matplotlib qt
 
 # prepare object points, like (0,0,0), (1,0,0), (2,0,0) ....,(6,5,0)
 objp = np.zeros((6*9,3), np.float32)
 objp[:,:2] = np.mgrid[0:9,0:6].T.reshape(-1,2)
+
 #print(objp)
 #quit()
+
 # Arrays to store object points and image points from all the images.
 objpoints = [] # 3d points in real world space
 imgpoints = [] # 2d points in image plane.
@@ -45,11 +49,8 @@ print(dist)
 print("Camera Matrix: ")
 print(mtx)
 
-# Note: later in the code, you can use the hardcoded  distortion coefficient and camera matrix
-dist1 = np.matrix([-0.24688775,-0.02373133,-0.00109842,0.00035108,-0.00258571])
-mtx1 = np.matrix([[1.15777930e+03,0.00000000e+00,6.67111054e+02],[0.00000000e+00,1.15282291e+03,3.86128937e+02],[0.00000000e+00,0.00000000e+00,1.00000000e+00]])
+# Note: later in the code, you can use the hardcoded distortion coefficient and camera matrix
 
-
-cv2.imshow('testimg undistorted',dst)
+cv2.imshow('testimg undistorted', dst)
 cv2.waitKey(5000)
 cv2.destroyAllWindows()
