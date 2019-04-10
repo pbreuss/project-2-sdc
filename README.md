@@ -100,3 +100,9 @@ combined_binary[(s_binary == 1) | (sxbinary == 1)] = 1
 
 Here is the result:
 ![combined_binary.jpg](./output_images/combined_binary.jpg)
+
+Next, we apply a mask, to get rid of parts of the image that might give wrong clues about lane lines. Here is the mask I use:
+
+![mask.jpg](./output_images/mask.jpg)
+
+Note, the mask is applied to the binary image, not to the original image!
