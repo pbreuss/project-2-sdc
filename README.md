@@ -130,3 +130,12 @@ Minv = cv2.getPerspectiveTransform(dst,src)
 The resulting "warped" image looks like this:
 
 ![binary_warped.jpg](./output_images/binary_warped.jpg)
+
+# coming soon
+# STEP 5 - Detect lane pixels and fit to find the lane boundary
+
+# STEP 6 - Determine the curvature of the lane and vehicle position with respect to center
+
+# STEP 7 - Warp the blank back to original image space using inverse perspective matrix (Minv)
+
+# STEP 8 Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.

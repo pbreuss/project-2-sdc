@@ -26,7 +26,7 @@ for fname in images:
     gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 
     # Find the chessboard corners
-    ret, corners = cv2.findChessboardCorners(gray, (9,6),None)
+    ret, corners = cv2.findChessboardCorners(gray, (9,6), None)
 
     # If found, add object points, image points
     if ret == True:
@@ -34,7 +34,7 @@ for fname in images:
         imgpoints.append(corners)
 
         # Draw and display the corners
-        img = cv2.drawChessboardCorners(img, (9,6), corners, ret)
+        #img = cv2.drawChessboardCorners(img, (9,6), corners, ret)
         #cv2.imshow('img',img)
         #cv2.waitKey(500)
 
@@ -43,6 +43,9 @@ ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.sh
 testimg = cv2.imread('camera_cal/calibration1.jpg')
 cv2.imshow('testimg distorted',testimg)
 dst = cv2.undistort(testimg, mtx, dist, None, mtx)
+
+# to save a frame, please uncomment
+#cv2.imwrite('output_images/calibration1_undistorted.jpg', dst)
 
 print("Distortion Coefficient: ")
 print(dist)

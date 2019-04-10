@@ -1,26 +1,20 @@
 # Advanced Lane Finding Project
 # The goals / steps of this project are the following:
 
-# 1 Compute the camera calibration matrix and distortion coefficients given a set of chessboard images. - DONE
-# 2 Apply a distortion correction to raw images. - DONE
-# 3 Use color transforms, gradients, etc., to create a thresholded binary image. - DONE
-# 4 Apply a perspective transform to rectify binary image ("birds-eye view"). - DONE
-# 5 Detect lane pixels and fit to find the lane boundary. - DONE
-# 6 Determine the curvature of the lane and vehicle position with respect to center. - DONE
-# 7 Warp the detected lane boundaries back onto the original image. - DONE
-# 8 Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position. - DONE
-# fix radius and dist from center in m - DONE
-# clean up - DONE
-# run on movie - DONE
-# document
-# upload to github
-# submit
+# 1 Compute the camera calibration matrix and distortion coefficients given a set of chessboard images. (see camera_calibration.py)
+# 2 Apply a distortion correction to raw images.
+# 3 Use color transforms, gradients, etc., to create a thresholded binary image.
+# 4 Apply a perspective transform to rectify binary image ("birds-eye view").
+# 5 Detect lane pixels and fit to find the lane boundary.
+# 6 Determine the curvature of the lane and vehicle position with respect to center.
+# 7 Warp the detected lane boundaries back onto the original image.
+# 8 Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
+
 
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
-
 
 # STEP 1 - camera matrix and distortion coefficient where computed in camera_calibration.py
 # hard code the camera matrix and distortion coefficient that we computed in the first step
@@ -40,15 +34,15 @@ offset_y = 0
 src = np.float32([[600, 450], [690, 450], [1100, 680], [280, 680]])     # these are the coodinates of the street
 
 dst = np.float32([[offset_x, offset_y], [img_size[0]-offset_x, offset_y], [img_size[0]-offset_x, img_size[1]-offset_y], [offset_x, img_size[1]-offset_y]])
-                  
+                
+# use cv2.getPerspectiveTransform() to get M and Minv, the transform matrix and inverse transform matrices to warp the street to birds view and back
+M = cv2.getPerspectiveTransform(src, dst)
+Minv = cv2.getPerspectiveTransform(dst,src)
+
 # left and right masks used for obtaining binary images
 left_mask = np.array([[500, 450], [100, 660], [0, 660], [0, 450]])          
 right_mask = np.array([[730, 450], [1080, 660], [1280, 660], [1280, 450]])  
 center_mask = np.array([[640, 475], [450, 660], [800, 660]])                
-
-# use cv2.getPerspectiveTransform() to get M and Minv, the transform matrix and inverse transform matrices to warp the street to birds view and back
-M = cv2.getPerspectiveTransform(src, dst)
-Minv = cv2.getPerspectiveTransform(dst,src)
 
 # this function 
 def find_lane_pixels(binary_warped):
@@ -197,10 +191,6 @@ def get_warped_binary(img, s_thresh=(170, 255), sx_thresh=(20, 100)):
     s_binary = np.zeros_like(s_channel)
     s_binary[(s_channel >= s_thresh[0]) & (s_channel <= s_thresh[1])] = 1
     
-    # Stack each channel
-    #color_binary = np.dstack(( np.zeros_like(sxbinary), sxbinary, s_binary)) * 255
-    #return color_binary
-    
     # Combine the two binary thresholds
     combined_binary = np.zeros_like(sxbinary)
     combined_binary[(s_binary == 1) | (sxbinary == 1)] = 1    
@@ -268,6 +258,7 @@ def pipeline(originalFrame):
     # Warp the blank back to original image space using inverse perspective matrix (Minv)
     newwarp = cv2.warpPerspective(color_warp, Minv, undistortedFrame.shape[1::-1])   # was img before
             
+    # STEP 8 Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
     # Combine the result with the original image
     result = cv2.addWeighted(undistortedFrame, 1, newwarp, 0.25, 0)
 
@@ -282,19 +273,22 @@ def pipeline(originalFrame):
 
 
 
-
-#originalFrame = cv2.imread("test_images/straight_lines1.jpg")
-
+# comment this code if you want to visualize the mask ######################################
+'''
+originalFrame = cv2.imread("test_images/straight_lines1.jpg")
 
 # apply masks
-#cv2.fillPoly(originalFrame, np.int_([left_mask]), 0)
-#cv2.fillPoly(originalFrame, np.int_([right_mask]), 0)
-#cv2.fillPoly(originalFrame, np.int_([center_mask]), 0)
+cv2.fillPoly(originalFrame, np.int_([left_mask]), 0)
+cv2.fillPoly(originalFrame, np.int_([right_mask]), 0)
+cv2.fillPoly(originalFrame, np.int_([center_mask]), 0)
 
-#cv2.imshow('result', originalFrame)
-#cv2.waitKey(5000)
-#quit()
+cv2.imshow('result', originalFrame)
+cv2.waitKey(5000)
+quit()
+'''
+######################################
 
+'''
 # Create a VideoCapture object and read from input file
 # If the input is the camera, pass 0 instead of the video file name
 #cap = cv2.VideoCapture('challenge_video.mp4')
@@ -328,17 +322,17 @@ cap.release()
  
 # Closes all the frames
 cv2.destroyAllWindows()
+'''
 
 
 # code to test with just one frame
 #originalFrame = cv2.imread("test_images/straight_lines1.jpg")
 #originalFrame = mpimg.imread("test_images/straight_lines1.jpg")
-
 #originalFrame = mpimg.imread("test_images/test2.jpg")
-#originalFrame = cv2.imread("test_images/test2.jpg")
+originalFrame = cv2.imread("test_images/test2.jpg")
 
-#result = pipeline(originalFrame)
+result = pipeline(originalFrame)
 
-#cv2.imshow('result', result)
-
-#cv2.waitKey(5000)
+cv2.imshow('result', result)
+#cv2.imwrite('output_images/final.jpg', result)
+cv2.waitKey(5000)
