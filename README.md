@@ -6,14 +6,14 @@ In this project, the goal was to write a software pipeline to identify the lane 
 
 Summary - The goals / steps of this project were the following:
 
-STEP 1: Compute the camera calibration matrix and distortion coefficients given a set of chessboard images.
-STEP 2: Apply a distortion correction to raw images.
-STEP 3: Use color transforms, gradients, etc., to create a thresholded binary image.
-STEP 4: Apply a perspective transform to rectify binary image ("birds-eye view").
-STEP 5: Detect lane pixels and fit to find the lane boundary.
-STEP 6: Determine the curvature of the lane and vehicle position with respect to center.
-STEP 7: Warp the detected lane boundaries back onto the original image.
-STEP 8: Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
+* STEP 1: Compute the camera calibration matrix and distortion coefficients given a set of chessboard images.
+* STEP 2: Apply a distortion correction to raw images.
+* STEP 3: Use color transforms, gradients, etc., to create a thresholded binary image.
+* STEP 4: Apply a perspective transform to rectify binary image ("birds-eye view").
+* STEP 5: Detect lane pixels and fit to find the lane boundary.
+* STEP 6: Determine the curvature of the lane and vehicle position with respect to center.
+* STEP 7: Warp the detected lane boundaries back onto the original image.
+* STEP 8: Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
 
 The images for camera calibration were stored in the folder called `camera_cal`. The images in `test_images` are for testing the pipeline on single frames. 
 
@@ -24,19 +24,21 @@ The camera calibration was done in a separate python script (camera_calibration.
 
 At the end of this script, the newly calculated calibration matrix and distortion coefficients can be tested on an undistored image.
 
-After undistortion, this image (./camera_cal/calibration1.jpg) 
+After undistortion, this image ![calibration1.jpg](./camera_cal/calibration1.jpg) 
 
 
-becomes this image: (./output_images/calibration1_undistorted.jpg)
+becomes this image: ![calibration1_undistorted.jpg](./output_images/calibration1_undistorted.jpg)
 
 These are the calculated calibration matrix and distortion coefficients which are going to be hardcoded in part 2 of this submission (lane_detection.py).
 
+```
 Distortion Coefficient:
 [[-0.24688775 -0.02373133 -0.00109842  0.00035108 -0.00258571]]
 Camera Matrix:
 [[1.15777930e+03 0.00000000e+00 6.67111054e+02]
  [0.00000000e+00 1.15282291e+03 3.86128937e+02]
  [0.00000000e+00 0.00000000e+00 1.00000000e+00]]
+```
 
 
 
