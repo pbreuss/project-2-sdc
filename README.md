@@ -24,10 +24,10 @@ The camera calibration was done in a separate python script (camera_calibration.
 
 At the end of this script, the newly calculated calibration matrix and distortion coefficients can be tested on an undistored image.
 
-After undistortion, this image ![calibration1.jpg](./camera_cal/calibration1.jpg) 
+After undistortion, this image ![calibration1.jpg](./camera_cal/calibration7.jpg) 
 
 
-becomes this image: ![calibration1_undistorted.jpg](./output_images/calibration1_undistorted.jpg)
+becomes this image: ![calibration1_undistorted.jpg](./output_images/calibration7_undistorted.jpg)
 
 These are the calculated calibration matrix and distortion coefficients which are going to be hardcoded in part 2 of this submission (lane_detection.py).
 
