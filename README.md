@@ -106,3 +106,27 @@ Next, we apply a mask, to get rid of parts of the image that might give wrong cl
 ![mask.jpg](./output_images/mask.jpg)
 
 Note, the mask is applied to the binary image, not to the original image!
+
+
+# STEP 4: Apply a perspective transform to rectify binary image ("birds-eye view").
+
+```
+binary_warped = cv2.warpPerspective(combined_binary, M, img_size, flags=cv2.INTER_LINEAR)
+```
+
+The Matrix M (and Minv) has been created previouly, according to the concept of "Perspective Transform" as explained in Lesson 7. By specifying 2d coordinates of your 3d image, and transforming them to a square, you get a birds eye view of your street.
+
+```
+# source and destination points (top left, top right, bottom right, bottom left) for warping street to birds view 
+src = np.float32([[600, 450], [690, 450], [1100, 680], [280, 680]])     # these are the coodinates of the street
+
+dst = np.float32([[offset_x, offset_y], [img_size[0]-offset_x, offset_y], [img_size[0]-offset_x, img_size[1]-offset_y], [offset_x, img_size[1]-offset_y]])
+                
+# use cv2.getPerspectiveTransform() to get M and Minv, the transform matrix and inverse transform matrices to warp the street to birds view and back
+M = cv2.getPerspectiveTransform(src, dst)
+Minv = cv2.getPerspectiveTransform(dst,src)
+```
+
+The resulting "warped" image looks like this:
+
+![binary_warped.jpg](./output_images/binary_warped.jpg)
