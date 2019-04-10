@@ -59,7 +59,7 @@ undistortedFrame = cv2.undistort(originalFrame, mtx, dist, None, mtx)
 
 # STEP 3 - Use color transforms, gradients, etc., to create a thresholded binary image
 
-In the function get_warped_binary we do all the steps recommended in Lesson 8, Gradients and COlor spaces. This includes converting the image to HLS color space and using Sobel on the L channel in the x direction (x-gradient). Additionally we absolute the x derivative to accentuate lines away from horizontal. Finally we normalize sobelx values and we create a binary image by using some treshholds. Note: to view your binary image use ```  cv2.imshow('sxbinary', sxbinary*255) ``` (multiplay the image by 255, otherwise its black!)
+In the function get_warped_binary we do all the steps recommended in Lesson 8, Gradients and Color spaces. This includes converting the image to HLS color space and using Sobel on the L channel in the x direction (x-gradient). Additionally we absolute the x derivative to accentuate lines away from horizontal. Finally we normalize sobelx values and we create a binary image by using some treshholds. Note: to view your binary image use ```  cv2.imshow('sxbinary', sxbinary*255) ``` (multiplay the image by 255, otherwise its black!)
 
 ```
 # Convert to HLS color space and separate the V channel
@@ -78,3 +78,25 @@ sxbinary[(scaled_sobel >= sx_thresh[0]) & (scaled_sobel <= sx_thresh[1])] = 1
 ```
 
 The resulting image looks like this (x-gradient): ![sxbinary.jpg](./output_images/sxbinary.jpg)
+
+After this we treshhold the s_channel (as recommended in Lessom 8)
+
+```
+# Threshold color channel
+s_binary = np.zeros_like(s_channel)
+s_binary[(s_channel >= s_thresh[0]) & (s_channel <= s_thresh[1])] = 1
+
+```
+
+The resulting image looks like this (s_channel): ![s_binary.jpg](./output_images/s_binary.jpg)
+
+After this step we combine both binary images (x-gradient and s_channel)
+
+```
+# Combine the two binary thresholds
+combined_binary = np.zeros_like(sxbinary)
+combined_binary[(s_binary == 1) | (sxbinary == 1)] = 1    
+```
+
+Here is the result:
+![combined_binary.jpg](./output_images/combined_binary.jpg)
