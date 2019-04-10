@@ -52,9 +52,29 @@ mtx = np.matrix([[1.15777930e+03,0.00000000e+00,6.67111054e+02],[0.00000000e+00,
 
 # STEP 2: Apply a distortion correction to raw images (lane_line_detection.py)
 
-Line 231:
+In Line 231 we undistort the frame with the opencv function undistort and the calibration matrix and distortion coefficients from the previous step.
 ```
 undistortedFrame = cv2.undistort(originalFrame, mtx, dist, None, mtx)
 ```
 
+# STEP 3 - Use color transforms, gradients, etc., to create a thresholded binary image
 
+In the function get_warped_binary we do all the steps recommended in Lesson 8, Gradients and COlor spaces. This includes converting the image to HLS color space and using Sobel on the L channel in the x direction (x-gradient). Additionally we absolute the x derivative to accentuate lines away from horizontal. Finally we normalize sobelx values and we create a binary image by using some treshholds. Note: to view your binary image use ```  cv2.imshow('sxbinary', sxbinary*255) ``` (multiplay the image by 255, otherwise its black!)
+
+```
+# Convert to HLS color space and separate the V channel
+hls = cv2.cvtColor(img, cv2.COLOR_RGB2HLS)
+l_channel = hls[:,:,1]
+s_channel = hls[:,:,2]
+
+# Sobel x
+sobelx = cv2.Sobel(l_channel, cv2.CV_64F, 1, 0) # Take the derivative in x
+abs_sobelx = np.absolute(sobelx) # Absolute x derivative to accentuate lines away from horizontal
+scaled_sobel = np.uint8(255*abs_sobelx/np.max(abs_sobelx))
+
+# Threshold x gradient
+sxbinary = np.zeros_like(scaled_sobel)
+sxbinary[(scaled_sobel >= sx_thresh[0]) & (scaled_sobel <= sx_thresh[1])] = 1
+```
+
+The resulting image looks like this (x-gradient): ![sxbinary.jpg](./output_images/sxbinary.jpg)
