@@ -40,7 +40,21 @@ Camera Matrix:
  [0.00000000e+00 0.00000000e+00 1.00000000e+00]]
 ```
 
-# STEP 2: ()
 
+lane_line_detection.py is the main program for this project. In this program we open a video (or simgle image) and apply the "pipeline" to each frame. STEP 2-8 are in this python script.
+
+For each frame the first thing we do is to undistort the frame, according to the calibration matrix and distortion coefficients from STEP 1. We hard coded these values in this python script. Line 21, 22:
+
+```
+dist = np.matrix([-0.24688775,-0.02373133,-0.00109842,0.00035108,-0.00258571])
+mtx = np.matrix([[1.15777930e+03,0.00000000e+00,6.67111054e+02],[0.00000000e+00,1.15282291e+03,3.86128937e+02],[0.00000000e+00,0.00000000e+00,1.00000000e+00]])
+```
+
+# STEP 2: Apply a distortion correction to raw images (lane_line_detection.py)
+
+Line 231:
+```
+undistortedFrame = cv2.undistort(originalFrame, mtx, dist, None, mtx)
+```
 
 
