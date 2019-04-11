@@ -1,10 +1,10 @@
-## Advanced Lane Finding
+# Advanced Lane Finding
 [![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
 ![Lanes Image](./output_images/final.jpg)
 
 In this project, the goal was to write a software pipeline to identify the lane boundaries in a video, but the main output or product was to create is a detailed writeup of the project. 
 
-## Summary - The goals / steps of this project were the following:
+# Summary - The goals / steps of this project were the following:
 
 * STEP 1: Compute the camera calibration matrix and distortion coefficients given a set of chessboard images.
 * STEP 2: Apply a distortion correction to raw images.
@@ -17,9 +17,9 @@ In this project, the goal was to write a software pipeline to identify the lane 
 
 The images for camera calibration were stored in the folder called `camera_cal`. The images in `test_images` are for testing the pipeline on single frames. 
 
-## Now the details:
+# Now the details:
 
-# STEP 1: (camera_calibration.py)
+## STEP 1: (camera_calibration.py)
 The camera calibration was done in a separate python script (camera_calibration.py), because it is usually run only once. The code has been taken more or less from Lession 6 "Camera Calibration". To calibrate a camera, an image with known proportion can be taken, like a chess board. In this case a 9x6 chessboard was photographed from many angles and perspective. Then each image is read and converted to gray, and the OpeCV function cv2.findChessboardCorners() is called. This function returns a list of 2d image points / coordinates of the chessboard tiles. This list is appended to a list of imagepoints, while a corresponding list of 3d object points is written to a list called objectpoints. Object points, is a prodefined list like (0,0,0), (1,0,0), (2,0,0) ....,(6,5,0). After all images have been read, the opencv function cv2.calibrateCamera is used to calculate calibration matrix and distortion coefficients. At leas 20 images are needed for this calibration process.
 
 At the end of this script, the newly calculated calibration matrix and distortion coefficients can be tested on an undistored image.
@@ -50,14 +50,14 @@ dist = np.matrix([-0.24688775,-0.02373133,-0.00109842,0.00035108,-0.00258571])
 mtx = np.matrix([[1.15777930e+03,0.00000000e+00,6.67111054e+02],[0.00000000e+00,1.15282291e+03,3.86128937e+02],[0.00000000e+00,0.00000000e+00,1.00000000e+00]])
 ```
 
-# STEP 2: Apply a distortion correction to raw images (lane_line_detection.py)
+## STEP 2: Apply a distortion correction to raw images (lane_line_detection.py)
 
 In Line 231 we undistort the frame with the opencv function undistort and the calibration matrix and distortion coefficients from the previous step.
 ```
 undistortedFrame = cv2.undistort(originalFrame, mtx, dist, None, mtx)
 ```
 
-# STEP 3 - Use color transforms, gradients, etc., to create a thresholded binary image
+## STEP 3 - Use color transforms, gradients, etc., to create a thresholded binary image
 
 In the function get_warped_binary we do all the steps recommended in Lesson 8, Gradients and Color spaces. This includes converting the image to HLS color space and using Sobel on the L channel in the x direction (x-gradient). Additionally we absolute the x derivative to accentuate lines away from horizontal. Finally we normalize sobelx values and we create a binary image by using some treshholds. Note: to view your binary image use ```  cv2.imshow('sxbinary', sxbinary*255) ``` (multiplay the image by 255, otherwise its black!)
 
@@ -108,7 +108,7 @@ Next, we apply a mask, to get rid of parts of the image that might give wrong cl
 Note, the mask is applied to the binary image, not to the original image!
 
 
-# STEP 4: Apply a perspective transform to rectify binary image ("birds-eye view").
+## STEP 4: Apply a perspective transform to rectify binary image ("birds-eye view").
 
 ```
 binary_warped = cv2.warpPerspective(combined_binary, M, img_size, flags=cv2.INTER_LINEAR)
@@ -131,7 +131,7 @@ The resulting "warped" image looks like this:
 
 ![binary_warped.jpg](./output_images/binary_warped.jpg)
 
-# STEP 5 - Detect lane pixels and fit to find the lane boundary
+## STEP 5 - Detect lane pixels and fit to find the lane boundary
 
 In step 5 we are passing the warped/top down  view of the road binary image to the function "fit_polynomial", to determine the actual curve / lane lines.
 
@@ -274,7 +274,7 @@ On this picture you see the pixels, the boxes, and in yellow the line that goes 
 
 Note: To plot this image, look at the code and set the second parameter of fit_polynomial (plot_it) to True
 
-# STEP 6 - Determine the curvature of the lane and vehicle position with respect to center
+## STEP 6 - Determine the curvature of the lane and vehicle position with respect to center
 
 ```
 # We'll choose the maximum y-value -1, corresponding to the bottom of the image, where we want radius of curvature
@@ -293,7 +293,7 @@ right_curverad = ((1 + (2*right_fit_m[0]*y_eval*ym_per_p + right_fit_m[1])**2)**
 return left_fit, right_fit, left_curverad, right_curverad, left_fit_m, right_fit_m
 ```
 
-# STEP 7 - Warp the blank back to original image space using inverse perspective matrix (Minv)
+## STEP 7 - Warp the blank back to original image space using inverse perspective matrix (Minv)
 
 
 After the lane lines have been computed, turn the coordinates into a polygon and draw it
@@ -341,13 +341,36 @@ After warping the image looks like this
 ![lane_image_with_lane_warped.jpg](./output_images/lane_image_with_lane_warped.jpg)
 
 
-# STEP 8 Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
+## STEP 8 Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
 
 The very final step, we add the warped lane image on undistorted frame with a weight such that it appears transparent. We also compute the position of the car within the road and add texts onto the street. 
 
 ```
 result = cv2.addWeighted(undistortedFrame, 1, lane_image_warped, 0.25, 0)
+
+offcenter = get_offcenter(result, left_fit_m, right_fit_m)
+    
+font = cv2.FONT_HERSHEY_SIMPLEX
+cv2.putText(result, 'Radius of curvature: {0:>10.3f} m'.format(left_curverad), (20,60), font, 1.5, (255, 255, 255), 2, cv2.LINE_AA)
+cv2.putText(result, 'Distance from lane center: {0:>10.3f} m'.format(offcenter), (20,130), font, 1.5, (255, 255, 255), 2, cv2.LINE_AA)
 ```
 
 ![Lanes Image](./output_images/final.jpg)
 
+# Discussion 
+
+Briefly discuss any problems / issues you faced in your implementation of this project. Where will your pipeline likely fail? What could you do to make it more robust?
+
+This implementation follows closely the tutorial. However, I have not implemented the suggestion from tutorial to search from the prir frame and therefore skip the sliding window step.
+
+## Challenges
+
+This implementation struggles with cases where the road has been repaired and there are other "lane like" lines along the road (see the movie challenge_video.mp4).
+
+Also the "harder_challenge_video.mp4" causes even more challenges, most likely because of the various shades and lighter spots on the road.
+
+I also tested this implementation with my own videos and it struggled a lot when there were no lines at all, like at a cross road.
+
+Another difficulty could be if the driver is not driving between two lanes.
+
+In any case, this was really a great second project, because it exposed the students to the many situations and scenarios a self driving car might encounter. I believe to get this done really well, you need to spend years (not days) on a really sophisticated lane detection algorithm.

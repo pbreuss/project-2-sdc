@@ -292,10 +292,6 @@ def pipeline(originalFrame):
     # Warp the blank back to original image space using inverse perspective matrix (Minv)
     lane_image_warped = cv2.warpPerspective(lane_image, Minv, undistortedFrame.shape[1::-1])   # was img before
 
-    cv2.imshow('lane_image_warped', lane_image_warped)
-    cv2.imwrite('output_images/lane_image_with_lane_warped.jpg', lane_image_warped)
-
-
     # STEP 8 Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
     # Combine the result with the original image
     result = cv2.addWeighted(undistortedFrame, 1, lane_image_warped, 0.25, 0)
@@ -311,7 +307,7 @@ def pipeline(originalFrame):
 
 
 
-# comment this code if you want to visualize the mask ######################################
+# comment this code if you want to visualize the mask ###################################### (End of STEP 3)
 '''
 originalFrame = cv2.imread("test_images/straight_lines1.jpg")
 
@@ -326,15 +322,18 @@ quit()
 '''
 ######################################
 
-'''
 # Create a VideoCapture object and read from input file
 # If the input is the camera, pass 0 instead of the video file name
 #cap = cv2.VideoCapture('challenge_video.mp4')
 cap = cv2.VideoCapture('project_video.mp4')
 
+
 # Check if camera opened successfully
 if (cap.isOpened()== False): 
     print("Error opening video stream or file")
+ 
+# create video output
+#out = cv2.VideoWriter('output_images/final.avi', cv2.VideoWriter_fourcc('M','J','P','G'), 10, (640, 480))
  
 # Read until video is completed
 while(cap.isOpened()):
@@ -346,7 +345,8 @@ while(cap.isOpened()):
 
         # Display the resulting frame
         cv2.imshow('Frame', result)
- 
+        #out.write(result)
+
         # Press Q on keyboard to  exit
         if cv2.waitKey(5) & 0xFF == ord('q'):
             break
@@ -357,6 +357,7 @@ while(cap.isOpened()):
  
 # When everything done, release the video capture object
 cap.release()
+#out.release()
  
 # Closes all the frames
 cv2.destroyAllWindows()
@@ -373,3 +374,6 @@ result = pipeline(originalFrame)
 cv2.imshow('result', result)
 #cv2.imwrite('output_images/final.jpg', result)
 cv2.waitKey(5000)
+'''
+
+
