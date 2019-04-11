@@ -279,22 +279,26 @@ def pipeline(originalFrame):
     rightPointsArray = np.array([rightPoints])
 
     # stack arrays in sequence horizontally (column wise).
-    pts = np.hstack((leftPointsArray, rightPointsArray))
+    polygon_pts = np.hstack((leftPointsArray, rightPointsArray))
 
     # draw the polygon/lane onto the warped blank image
-    cv2.fillPoly(lane_image, np.int_([pts]), (0,240, 0))
+    cv2.fillPoly(lane_image, np.int_([polygon_pts]), (0,240, 0))
 
     # if you want to view the polygon/lane uncomment this
-    cv2.imshow('lane_image', lane_image*255)
-    cv2.imwrite('output_images/lane_image_with_lane.jpg', lane_image)
-
+    #cv2.imshow('lane_image', lane_image)
+    #cv2.imwrite('output_images/lane_image_with_lane.jpg', lane_image)
+    
     # STEP 7 warp back on image
     # Warp the blank back to original image space using inverse perspective matrix (Minv)
-    newwarp = cv2.warpPerspective(lane_image, Minv, undistortedFrame.shape[1::-1])   # was img before
-            
+    lane_image_warped = cv2.warpPerspective(lane_image, Minv, undistortedFrame.shape[1::-1])   # was img before
+
+    cv2.imshow('lane_image_warped', lane_image_warped)
+    cv2.imwrite('output_images/lane_image_with_lane_warped.jpg', lane_image_warped)
+
+
     # STEP 8 Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
     # Combine the result with the original image
-    result = cv2.addWeighted(undistortedFrame, 1, newwarp, 0.25, 0)
+    result = cv2.addWeighted(undistortedFrame, 1, lane_image_warped, 0.25, 0)
 
     # put text on the image
     offcenter = get_offcenter(result, left_fit_m, right_fit_m)

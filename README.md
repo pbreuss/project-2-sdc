@@ -321,10 +321,10 @@ leftPointsArray = np.array([leftPoints])
 rightPointsArray = np.array([rightPoints])
 
 # stack arrays in sequence horizontally (column wise).
-pts = np.hstack((leftPointsArray, rightPointsArray))
+polygon_pts = np.hstack((leftPointsArray, rightPointsArray))
 
 # draw the polygon/lane onto the warped blank image
-cv2.fillPoly(lane_image, np.int_([pts]), (0,240, 0))
+cv2.fillPoly(lane_image, np.int_([polygon_pts]), (0,240, 0))
 ```
 
 At this point lane_image looks like this:
@@ -332,3 +332,13 @@ At this point lane_image looks like this:
 ![lane_image_with_lane.jpg](./output_images/lane_image_with_lane.jpg)
 
 # STEP 8 Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
+
+Now we warp the image back to the drivers perspective using the inverse matrix of the one we used to warp it to birds view
+
+```
+lane_image_warped = cv2.warpPerspective(lane_image, Minv, undistortedFrame.shape[1::-1])   # was img before
+```
+
+After warping the image looks like this
+![lane_image_with_lane_warped.jpg](./output_images/lane_image_with_lane_warped.jpg)
+
