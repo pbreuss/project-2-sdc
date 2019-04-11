@@ -252,15 +252,46 @@ lefty = nonzeroy[left_lane_inds]
 rightx = nonzerox[right_lane_inds]
 righty = nonzeroy[right_lane_inds]
 
-# leftx, lefty are the pixels part of a lane
+# leftx, lefty are the pixels part of the left lane
+# rightx, righty are the pixels part of the right lane
 
 return leftx, lefty, rightx, righty, out_img
 ```
 
+In fit_polynomial, after we received the pixels of the left and right lane that are supposed to be part of the left and right lane
+we try to draw a line: This can be done with np.polyfit - which draws a least squares polynomial fit. We do this once  in pixel coordinates and once in meters. We need line in pixels for drawing the line onto the screen, and in meters for calculating the radius and the position of the car within the lanes.
+```
+# Fit a second order polynomial to each using `np.polyfit`
+left_fit = np.polyfit(lefty, leftx, 2)
+left_fit_m = np.polyfit(lefty*ym_per_p, leftx*xm_per_p, 2)   # for radius calculation
+right_fit = np.polyfit(righty, rightx, 2)
+right_fit_m = np.polyfit(righty*ym_per_p, rightx*xm_per_p, 2)  # for radius calculation
+```
+
+On this picture you see the pixels, the boxes, and in yellow the line that goes through the pixels
+
 ![Figure_1.png](./output_images/Figure_1.png)
 
+Note: To plot this image, look at the code and set the second parameter of fit_polynomial (plot_it) to True
 
 # STEP 6 - Determine the curvature of the lane and vehicle position with respect to center
+
+```
+# We'll choose the maximum y-value -1, corresponding to the bottom of the image, where we want radius of curvature
+y_eval = binary_warped.shape[0]-1
+# Calculation of R_curve (radius of curvature)
+left_curverad = ((1 + (2*left_fit_m[0]*y_eval*ym_per_p + left_fit_m[1])**2)**1.5) / np.absolute(2*left_fit_m[0])
+right_curverad = ((1 + (2*right_fit_m[0]*y_eval*ym_per_p + right_fit_m[1])**2)**1.5) / np.absolute(2*right_fit_m[0])
+
+# left_fit - Polynomial coefficients of the left curve to draw the curve on the image
+# right_fit - Polynomial coefficients of the right curve to draw the curve on the image
+# left_curverad - the radious of the left curve
+# right_curverad - the radious of the right curve
+# left_fit_m- Polynomial coefficients of the left curve to calculate the offset of the car
+# right_fit_m- Polynomial coefficients of the right curve to calculate the offset of the car
+
+return left_fit, right_fit, left_curverad, right_curverad, left_fit_m, right_fit_m
+```
 
 # STEP 7 - Warp the blank back to original image space using inverse perspective matrix (Minv)
 
