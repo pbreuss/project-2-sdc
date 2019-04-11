@@ -295,4 +295,40 @@ return left_fit, right_fit, left_curverad, right_curverad, left_fit_m, right_fit
 
 # STEP 7 - Warp the blank back to original image space using inverse perspective matrix (Minv)
 
+
+After the lane lines have been computed, turn the coordinates into a polygon and draw it
+```
+# Create an image to draw the lines on
+rows, cols = binary_warped.shape[:2]
+warp_zero = np.zeros(undistortedFrame.shape[:2], dtype=np.uint8)
+lane_image = np.dstack((warp_zero, warp_zero, warp_zero))
+
+# generate the plot points
+plot_y = np.linspace(0, rows-1, rows) # return evenly spaced numbers over a specified interval.
+left_fit_x = np.polyval(left_fit_p, plot_y)  # calculate the points for the left lane 
+right_fit_x = np.polyval(right_fit_p, plot_y) # calculate the points for the right lane 
+
+# Put left and right points together
+leftPoints2Lists = np.vstack([left_fit_x, plot_y])
+rigthPoints2Lists = np.vstack([right_fit_x, plot_y])
+
+# make array with [x,y],[x,y],... 
+leftPoints = np.transpose(leftPoints2Lists)
+rightPoints = np.flipud(np.transpose(rigthPoints2Lists))
+
+# lets put the points in yet another array 
+leftPointsArray = np.array([leftPoints])
+rightPointsArray = np.array([rightPoints])
+
+# stack arrays in sequence horizontally (column wise).
+pts = np.hstack((leftPointsArray, rightPointsArray))
+
+# draw the polygon/lane onto the warped blank image
+cv2.fillPoly(lane_image, np.int_([pts]), (0,240, 0))
+```
+
+At this point lane_image looks like this:
+
+![lane_image_with_lane.jpg](./output_images/lane_image_with_lane.jpg)
+
 # STEP 8 Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.

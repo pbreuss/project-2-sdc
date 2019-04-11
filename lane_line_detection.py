@@ -259,25 +259,38 @@ def pipeline(originalFrame):
     # Create an image to draw the lines on
     rows, cols = binary_warped.shape[:2]
     warp_zero = np.zeros(undistortedFrame.shape[:2], dtype=np.uint8)
-    color_warp = np.dstack((warp_zero, warp_zero, warp_zero))
+    lane_image = np.dstack((warp_zero, warp_zero, warp_zero))
 
     # generate the plot points
-    plot_y = np.linspace(0, rows-1, rows)
-    left_fit_x = np.polyval(left_fit_p, plot_y)
-    right_fit_x = np.polyval(right_fit_p, plot_y)
+    plot_y = np.linspace(0, rows-1, rows) # return evenly spaced numbers over a specified interval.
+    left_fit_x = np.polyval(left_fit_p, plot_y)  # calculate the points for the left lane 
+    right_fit_x = np.polyval(right_fit_p, plot_y) # calculate the points for the right lane 
 
-    # Recast the x and y points into usable format for cv2.fillPoly()
-    pts_left = np.array([np.transpose(np.vstack([left_fit_x, plot_y]))])
-    pts_right = np.array([np.flipud(np.transpose(np.vstack([right_fit_x, plot_y])))])
-    pts = np.hstack((pts_left, pts_right))
+    # Put left and right points together
+    leftPoints2Lists = np.vstack([left_fit_x, plot_y])
+    rigthPoints2Lists = np.vstack([right_fit_x, plot_y])
 
-    # Draw the lane onto the warped blank image
-    cv2.fillPoly(color_warp, np.int_([pts]), (0,240, 0))
-    #cv2.imshow('color_warp', color_warp*255)
+    # make array with [x,y],[x,y],... 
+    leftPoints = np.transpose(leftPoints2Lists)
+    rightPoints = np.flipud(np.transpose(rigthPoints2Lists))
+    
+    # lets put the points in yet another array 
+    leftPointsArray = np.array([leftPoints])
+    rightPointsArray = np.array([rightPoints])
+
+    # stack arrays in sequence horizontally (column wise).
+    pts = np.hstack((leftPointsArray, rightPointsArray))
+
+    # draw the polygon/lane onto the warped blank image
+    cv2.fillPoly(lane_image, np.int_([pts]), (0,240, 0))
+
+    # if you want to view the polygon/lane uncomment this
+    cv2.imshow('lane_image', lane_image*255)
+    cv2.imwrite('output_images/lane_image_with_lane.jpg', lane_image)
 
     # STEP 7 warp back on image
     # Warp the blank back to original image space using inverse perspective matrix (Minv)
-    newwarp = cv2.warpPerspective(color_warp, Minv, undistortedFrame.shape[1::-1])   # was img before
+    newwarp = cv2.warpPerspective(lane_image, Minv, undistortedFrame.shape[1::-1])   # was img before
             
     # STEP 8 Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
     # Combine the result with the original image
