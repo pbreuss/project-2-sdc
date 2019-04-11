@@ -331,8 +331,6 @@ At this point lane_image looks like this:
 
 ![lane_image_with_lane.jpg](./output_images/lane_image_with_lane.jpg)
 
-# STEP 8 Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
-
 Now we warp the image back to the drivers perspective using the inverse matrix of the one we used to warp it to birds view
 
 ```
@@ -341,4 +339,15 @@ lane_image_warped = cv2.warpPerspective(lane_image, Minv, undistortedFrame.shape
 
 After warping the image looks like this
 ![lane_image_with_lane_warped.jpg](./output_images/lane_image_with_lane_warped.jpg)
+
+
+# STEP 8 Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
+
+The very final step, we add the warped lane image on undistorted frame with a weight such that it appears transparent. We also compute the position of the car within the road and add texts onto the street. 
+
+```
+result = cv2.addWeighted(undistortedFrame, 1, lane_image_warped, 0.25, 0)
+```
+
+![Lanes Image](./output_images/final.jpg)
 
