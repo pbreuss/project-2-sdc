@@ -190,7 +190,7 @@ def fit_polynomial(binary_warped, plot_it=False):
     return left_fit, right_fit, left_curverad, right_curverad, left_fit_m, right_fit_m
 
 
-# Edit this function to create your own pipeline.
+# this function turns an undistorted image into a warped binary
 def get_warped_binary(img, s_thresh=(170, 255), sx_thresh=(20, 100)):
 
     # Convert to HLS color space and separate the V channel
@@ -240,7 +240,7 @@ def get_offcenter(img, left_fit_m, right_fit_m):
     return center - (left + right)/2    
 
 
-# Edit this function to create your own pipeline.
+# custom pipeline to detect öane lines
 def pipeline(originalFrame):
 
     # STEP 2 - first distort the image
