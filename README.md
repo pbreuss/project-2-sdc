@@ -358,7 +358,7 @@ cv2.putText(result, 'Distance from lane center: {0:>10.3f} m'.format(offcenter),
 
 ![Lanes Image](./output_images/final.jpg)
 
-Video of the final result is [here](./output_images/final_20sec.mp4) 
+Video of the final result is [here](./output_images/final_20sec.mp4) (20 sec). Long video is [here](./output_images/final.mp4)
 
 # Discussion 
 
