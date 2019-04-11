@@ -2,7 +2,8 @@
 [![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
 ![Lanes Image](./output_images/final.jpg)
 
-In this project, the goal was to write a software pipeline to identify the lane boundaries in a video, but the main output or product was to create a detailed writeup of the project. Video of the final result is [here](./output_images/final_20sec.mp4) 
+In this project, the goal was to write a software pipeline to identify the lane boundaries in a video, but the main output or product was to create a detailed writeup of the project. Video of the final result is [here](./output_images/final_20sec.mp4) (20 sec). Long video is [here](./output_images/final.mp4)
+
 
 # Summary
 
