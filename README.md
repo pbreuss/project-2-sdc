@@ -2,7 +2,7 @@
 [![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
 ![Lanes Image](./output_images/final.jpg)
 
-In this project, the goal was to write a software pipeline to identify the lane boundaries in a video, but the main output or product was to create a detailed writeup of the project. 
+In this project, the goal was to write a software pipeline to identify the lane boundaries in a video, but the main output or product was to create a detailed writeup of the project. Video of the final result is [here](./output_images/final_20sec.mp4) 
 
 # Summary
 
@@ -357,6 +357,8 @@ cv2.putText(result, 'Distance from lane center: {0:>10.3f} m'.format(offcenter),
 ```
 
 ![Lanes Image](./output_images/final.jpg)
+
+Video of the final result is [here](./output_images/final_20sec.mp4) 
 
 # Discussion 
 

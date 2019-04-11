@@ -333,8 +333,9 @@ if (cap.isOpened()== False):
     print("Error opening video stream or file")
  
 # create video output
-#out = cv2.VideoWriter('output_images/final.avi', cv2.VideoWriter_fourcc('M','J','P','G'), 10, (640, 480))
- 
+#fourcc = cv2.VideoWriter_fourcc(*'MP4V')
+#out = cv2.VideoWriter('output_images/final.mp4', fourcc, 15, (1280, 720))
+
 # Read until video is completed
 while(cap.isOpened()):
     # Capture frame-by-frame
