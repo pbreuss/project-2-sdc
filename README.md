@@ -144,7 +144,13 @@ The function fit_polynomial in turn calls "find_lane_pixels" to find the lane pi
 
 In find_lane_pixels we do the following:
 
-Take a histogram of the bottom half of the image
+First, we create an output image to draw on and visualize the result. np.dstack takes a sequence of arrays and stack them along the third axis to make a single array. This is a simple way to stack 2D arrays (images) into a single 3D array for processing. If we pass in 3 times our binary image, we get 3D array for processing.
+
+```
+out_img = np.dstack((binary_warped, binary_warped, binary_warped))
+```
+
+Next, we take a histogram of the bottom half of the image
 
 ```
 histogram = np.sum(binary_warped[binary_warped.shape[0]//2:,:], axis=0)
@@ -160,33 +166,34 @@ plt.show()
 and the result will be the following image. Here we see at which x coordinate in the bottom half of the image we have the most pixels - this is a very good indicator of where the line starts.
 ![Figure_2.png](./output_images/Figure_2.png)
 
-Next, we create an output image to draw on and visualize the result. np.dstack takes a sequence of arrays and stack them along the third axis to make a single array. This is a simple way to stack 2D arrays (images) into a single 3D array for processing. If we pass in 3 times our binary image, we get 3D array for processing.
-
-```
-out_img = np.dstack((binary_warped, binary_warped, binary_warped))
-```
-
 Find the peak of the left and right halves of the histogram. These will be the starting point for the left and right lines.
 numpy.argmax returns the indices of the maximum values along an axis.
 
 ```
-midpoint = np.int(histogram.shape[0]//2)      # for the current frame, the result is midpoint=640; // make a div with an int as result
+midpoint = np.int(histogram.shape[0]//2)      # for the current frame, the result is midpoint=640; "//" make a div with an int as result
 leftx_base = np.argmax(histogram[:midpoint])  # for the current frame, the result is leftx_base=335
 rightx_base = np.argmax(histogram[midpoint:]) + midpoint  # for the current frame, the result is rightx_base=975
 ```
 
+In the next step, we are using "sliding windows", to determine the shape of the curve. (Code mostly taken from tutorial.)
+To do this we need a few parameters.
 
-# HYPERPARAMETERS
-# Choose the number of sliding windows
+Choose the number of sliding windows, set the width of the windows +/- margin, and set the minimum number of pixels found to recenter window
+
+```
 nwindows = 9
-# Set the width of the windows +/- margin
 margin = 100
-# Set minimum number of pixels found to recenter window
 minpix = 50
+```
 
-# Set height of windows - based on nwindows above and image shape
+Set height of windows - based on nwindows above and image shape: binary_warped.shape[0] is the height of the image
+```
 window_height = np.int(binary_warped.shape[0]//nwindows)
-# Identify the x and y positions of all nonzero pixels in the image
+```
+
+Identify the x and y positions of all nonzero pixels in the image (this is code from the tutorial)
+
+```
 nonzero = binary_warped.nonzero()
 nonzeroy = np.array(nonzero[0])
 nonzerox = np.array(nonzero[1])
@@ -209,10 +216,11 @@ for window in range(nwindows):
     win_xright_high = rightx_current + margin
     
     # Draw the windows on the visualization image
-    cv2.rectangle(out_img,(win_xleft_low,win_y_low),
-    (win_xleft_high,win_y_high),(0,255,0), 2) 
-    cv2.rectangle(out_img,(win_xright_low,win_y_low),
-    (win_xright_high,win_y_high),(0,255,0), 2) 
+    if plot_it:
+        cv2.rectangle(out_img,(win_xleft_low,win_y_low),
+        (win_xleft_high,win_y_high),(0,255,0), 2) 
+        cv2.rectangle(out_img,(win_xright_low,win_y_low),
+        (win_xright_high,win_y_high),(0,255,0), 2) 
     
     # Identify the nonzero pixels in x and y within the window #
     good_left_inds = ((nonzeroy >= win_y_low) & (nonzeroy < win_y_high) & 
@@ -244,12 +252,10 @@ lefty = nonzeroy[left_lane_inds]
 rightx = nonzerox[right_lane_inds]
 righty = nonzeroy[right_lane_inds]
 
+# leftx, lefty are the pixels part of a lane
+
 return leftx, lefty, rightx, righty, out_img
-
-
-
-
-
+```
 
 ![Figure_1.png](./output_images/Figure_1.png)
 
