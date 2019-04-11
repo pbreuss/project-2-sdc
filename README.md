@@ -160,22 +160,21 @@ plt.show()
 and the result will be the following image. Here we see at which x coordinate in the bottom half of the image we have the most pixels - this is a very good indicator of where the line starts.
 ![Figure_2.png](./output_images/Figure_2.png)
 
-
-
-Create an output image to draw on and visualize the result. np.dstack takes a sequence of arrays and stack them along the third axis to make a single array. This is a simple way to stack 2D arrays (images) into a single 3D array for processing. If we pass in 3 times our binary image, we get 3D array for processing.
+Next, we create an output image to draw on and visualize the result. np.dstack takes a sequence of arrays and stack them along the third axis to make a single array. This is a simple way to stack 2D arrays (images) into a single 3D array for processing. If we pass in 3 times our binary image, we get 3D array for processing.
 
 ```
 out_img = np.dstack((binary_warped, binary_warped, binary_warped))
 ```
 
-Find the peak of the left and right halves of the histogram
-These will be the starting point for the left and right lines
+Find the peak of the left and right halves of the histogram. These will be the starting point for the left and right lines.
+numpy.argmax returns the indices of the maximum values along an axis.
 
 ```
-midpoint = np.int(histogram.shape[0]//2)    
-leftx_base = np.argmax(histogram[:midpoint])
-rightx_base = np.argmax(histogram[midpoint:]) + midpoint
+midpoint = np.int(histogram.shape[0]//2)      # for the current frame, the result is midpoint=640; // make a div with an int as result
+leftx_base = np.argmax(histogram[:midpoint])  # for the current frame, the result is leftx_base=335
+rightx_base = np.argmax(histogram[midpoint:]) + midpoint  # for the current frame, the result is rightx_base=975
 ```
+
 
 # HYPERPARAMETERS
 # Choose the number of sliding windows
