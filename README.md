@@ -2,9 +2,11 @@
 [![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
 ![Lanes Image](./output_images/final.jpg)
 
-In this project, the goal was to write a software pipeline to identify the lane boundaries in a video, but the main output or product was to create is a detailed writeup of the project. 
+In this project, the goal was to write a software pipeline to identify the lane boundaries in a video, but the main output or product was to create a detailed writeup of the project. 
 
-# Summary - The goals / steps of this project were the following:
+# Summary
+
+The goals / steps of this project were the following:
 
 * STEP 1: Compute the camera calibration matrix and distortion coefficients given a set of chessboard images.
 * STEP 2: Apply a distortion correction to raw images.
@@ -15,21 +17,19 @@ In this project, the goal was to write a software pipeline to identify the lane 
 * STEP 7: Warp the detected lane boundaries back onto the original image.
 * STEP 8: Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
 
-The images for camera calibration were stored in the folder called `camera_cal`. The images in `test_images` are for testing the pipeline on single frames. 
-
-# Now the details:
+The images for camera calibration are stored in the folder called `camera_cal`. The images in `test_images` are for testing the pipeline on single frames. 
 
 ## STEP 1: (camera_calibration.py)
-The camera calibration was done in a separate python script (camera_calibration.py), because it is usually run only once. The code has been taken more or less from Lession 6 "Camera Calibration". To calibrate a camera, an image with known proportion can be taken, like a chess board. In this case a 9x6 chessboard was photographed from many angles and perspective. Then each image is read and converted to gray, and the OpeCV function cv2.findChessboardCorners() is called. This function returns a list of 2d image points / coordinates of the chessboard tiles. This list is appended to a list of imagepoints, while a corresponding list of 3d object points is written to a list called objectpoints. Object points, is a prodefined list like (0,0,0), (1,0,0), (2,0,0) ....,(6,5,0). After all images have been read, the opencv function cv2.calibrateCamera is used to calculate calibration matrix and distortion coefficients. At leas 20 images are needed for this calibration process.
+The camera calibration was done in a separate python script (camera_calibration.py), because it is usually run only once. The code has been taken more or less from Lession 6 "Camera Calibration". To calibrate a camera, an image with known proportion can be taken, like a chess board. In this case a 9x6 chessboard was photographed from many angles and perspective. Then each image is read and converted to gray, and the OpeCV function cv2.findChessboardCorners() is called. This function returns a list of 2d image points / coordinates of the chessboard tiles. This list is appended to a list of imagepoints, while a corresponding list of 3d object points is written to a list called objectpoints. Object points, is a predefined list like (0,0,0), (1,0,0), (2,0,0) ....,(6,5,0). After all images have been read, the opencv function cv2.calibrateCamera is used to calculate calibration matrix and distortion coefficients. At least 20 images are needed for this calibration process.
 
 At the end of this script, the newly calculated calibration matrix and distortion coefficients can be tested on an undistored image.
 
-After undistortion, this image ![calibration1.jpg](./camera_cal/calibration1.jpg) 
+This original image ![calibration1.jpg](./camera_cal/calibration1.jpg) 
 
 
-becomes this image: ![calibration1_undistorted.jpg](./output_images/calibration1_undistorted.jpg)
+becomes this image after undistortion: ![calibration1_undistorted.jpg](./output_images/calibration1_undistorted.jpg)
 
-These are the calculated calibration matrix and distortion coefficients which are going to be hardcoded in part 2 of this submission (lane_detection.py).
+These is the calculated calibration matrix and distortion coefficients which are going to be hardcoded in part 2 of this submission (lane_detection.py).
 
 ```
 Distortion Coefficient:
@@ -41,7 +41,7 @@ Camera Matrix:
 ```
 
 
-lane_line_detection.py is the main program for this project. In this program we open a video (or simgle image) and apply the "pipeline" to each frame. STEP 2-8 are in this python script.
+lane_line_detection.py is the main program for this project. In this file we open a video (or simgle image) and apply the "pipeline" to each frame. STEP 2-8 are in this python script.
 
 For each frame the first thing we do is to undistort the frame, according to the calibration matrix and distortion coefficients from STEP 1. We hard coded these values in this python script. Line 21, 22:
 
@@ -175,7 +175,7 @@ leftx_base = np.argmax(histogram[:midpoint])  # for the current frame, the resul
 rightx_base = np.argmax(histogram[midpoint:]) + midpoint  # for the current frame, the result is rightx_base=975
 ```
 
-In the next step, we are using "sliding windows", to determine the shape of the curve. (Code mostly taken from tutorial.)
+In the next step, we are using "sliding windows", to determine the shape of the curve (code mostly taken from tutorial).
 To do this we need a few parameters.
 
 Choose the number of sliding windows, set the width of the windows +/- margin, and set the minimum number of pixels found to recenter window
@@ -197,6 +197,7 @@ Identify the x and y positions of all nonzero pixels in the image (this is code 
 nonzero = binary_warped.nonzero()
 nonzeroy = np.array(nonzero[0])
 nonzerox = np.array(nonzero[1])
+
 # Current positions to be updated later for each window in nwindows
 leftx_current = leftx_base
 rightx_current = rightx_base
@@ -334,7 +335,7 @@ At this point lane_image looks like this:
 Now we warp the image back to the drivers perspective using the inverse matrix of the one we used to warp it to birds view
 
 ```
-lane_image_warped = cv2.warpPerspective(lane_image, Minv, undistortedFrame.shape[1::-1])   # was img before
+lane_image_warped = cv2.warpPerspective(lane_image, Minv, undistortedFrame.shape[1::-1])
 ```
 
 After warping the image looks like this
@@ -343,7 +344,7 @@ After warping the image looks like this
 
 ## STEP 8 Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
 
-The very final step, we add the warped lane image on undistorted frame with a weight such that it appears transparent. We also compute the position of the car within the road and add texts onto the street. 
+At the very final step, we add the warped lane image on undistorted frame with a weight such that it appears transparent. We also compute the position of the car within the road and add texts onto the street. 
 
 ```
 result = cv2.addWeighted(undistortedFrame, 1, lane_image_warped, 0.25, 0)
@@ -359,9 +360,9 @@ cv2.putText(result, 'Distance from lane center: {0:>10.3f} m'.format(offcenter),
 
 # Discussion 
 
-Briefly discuss any problems / issues you faced in your implementation of this project. Where will your pipeline likely fail? What could you do to make it more robust?
+__Briefly discuss any problems / issues you faced in your implementation of this project. Where will your pipeline likely fail? What could you do to make it more robust?__
 
-This implementation follows closely the tutorial. However, I have not implemented the suggestion from tutorial to search from the prir frame and therefore skip the sliding window step.
+This implementation follows closely the tutorial. However, I have not implemented the suggestion from the tutorial to search from the prior frame and therefore skip the sliding window step.
 
 ## Challenges
 
