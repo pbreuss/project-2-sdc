@@ -189,14 +189,12 @@ def fit_polynomial(binary_warped, plot_it=False):
     # right_fit_m- Polynomial coefficients of the right curve to calculate the offset of the car
     return left_fit, right_fit, left_curverad, right_curverad, left_fit_m, right_fit_m
 
-
-# this function turns an undistorted image into a warped binary
-def get_warped_binary(img, s_thresh=(170, 255), sx_thresh=(20, 100)):
-
+# this function applies sobel and returns a binary imagae
+def abs_sobel_thresh(img, orient='x', thresh_min=0, thresh_max=255):
+    
     # Convert to HLS color space and separate the V channel
     hls = cv2.cvtColor(img, cv2.COLOR_RGB2HLS)
     l_channel = hls[:,:,1]
-    s_channel = hls[:,:,2]
 
     # Sobel x
     sobelx = cv2.Sobel(l_channel, cv2.CV_64F, 1, 0) # Take the derivative in x
@@ -205,12 +203,34 @@ def get_warped_binary(img, s_thresh=(170, 255), sx_thresh=(20, 100)):
 
     # Threshold x gradient
     sxbinary = np.zeros_like(scaled_sobel)
-    sxbinary[(scaled_sobel >= sx_thresh[0]) & (scaled_sobel <= sx_thresh[1])] = 1
+    sxbinary[(scaled_sobel >= thresh_min) & (scaled_sobel <= thresh_max)] = 1
 
-    # Threshold color channel
-    s_binary = np.zeros_like(s_channel)
-    s_binary[(s_channel >= s_thresh[0]) & (s_channel <= s_thresh[1])] = 1
+    # Return the result
+    return sxbinary
+
+# this function applies color treshholding and returns a binary imagae
+def color_treshholding(img, orient='x', thresh_min=0, thresh_max=255):
     
+    l_channel = cv2.cvtColor(img, cv2.COLOR_BGR2LUV)[:,:,0]
+    b_channel = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)[:,:,2]
+    
+    # create a binary image
+    s_binary = np.zeros(img.shape[:2], dtype=np.uint8)
+    s_binary[((225 <= l_channel) | (155 <= b_channel))] = 1
+
+    # Return the result
+    return s_binary
+
+
+# this function turns an undistorted image into a warped binary
+def get_warped_binary(img, s_thresh=(170, 255), sx_thresh=(20, 100)):
+
+    # apply sobel
+    sxbinary = abs_sobel_thresh(img, sx_thresh[0], sx_thresh[1])
+
+    # color thresholding
+    s_binary = color_treshholding(img, s_thresh[0], s_thresh[1])
+
     # Combine the two binary thresholds
     combined_binary = np.zeros_like(sxbinary)
     combined_binary[(s_binary == 1) | (sxbinary == 1)] = 1    
@@ -322,6 +342,7 @@ quit()
 '''
 ######################################
 
+
 # Create a VideoCapture object and read from input file
 # If the input is the camera, pass 0 instead of the video file name
 #cap = cv2.VideoCapture('challenge_video.mp4')
@@ -368,13 +389,13 @@ cv2.destroyAllWindows()
 #originalFrame = cv2.imread("test_images/straight_lines1.jpg")
 #originalFrame = mpimg.imread("test_images/straight_lines1.jpg")
 #originalFrame = mpimg.imread("test_images/test2.jpg")
-originalFrame = cv2.imread("test_images/test2.jpg")
+originalFrame = cv2.imread("test_images/error2.jpg")
 
 result = pipeline(originalFrame)
 
 cv2.imshow('result', result)
 #cv2.imwrite('output_images/final.jpg', result)
 cv2.waitKey(5000)
+
+
 '''
-
-
