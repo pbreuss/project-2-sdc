@@ -209,28 +209,29 @@ def abs_sobel_thresh(img, orient='x', thresh_min=0, thresh_max=255):
     return sxbinary
 
 # this function applies color treshholding and returns a binary imagae
-def color_treshholding(img, orient='x', thresh_min=0, thresh_max=255):
+def color_treshholding(img, min_l_channel=225, min_b_channel=155):
     
     l_channel = cv2.cvtColor(img, cv2.COLOR_BGR2LUV)[:,:,0]
     b_channel = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)[:,:,2]
     
     # create a binary image
     s_binary = np.zeros(img.shape[:2], dtype=np.uint8)
-    s_binary[((225 <= l_channel) | (155 <= b_channel))] = 1
+    s_binary[((min_l_channel <= l_channel) | (min_b_channel <= b_channel))] = 1
+    #cv2.imwrite('output_images/s_binary.jpg', s_binary*255)
+    #cv2.imshow('Frame', s_binary*255)
 
     # Return the result
     return s_binary
 
 
 # this function turns an undistorted image into a warped binary
-def get_warped_binary(img, s_thresh=(0, 100), sx_thresh=(0, 100)):
-#def get_warped_binary(img, s_thresh=(170, 255), sx_thresh=(20, 100)):
+def get_warped_binary(img):
 
     # apply sobel
-    sxbinary = abs_sobel_thresh(img, sx_thresh[0], sx_thresh[1])
+    sxbinary = abs_sobel_thresh(img, 0, 100)
 
     # color thresholding
-    s_binary = color_treshholding(img, s_thresh[0], s_thresh[1])
+    s_binary = color_treshholding(img, 220, 160)
 
     # Combine the two binary thresholds
     combined_binary = np.zeros_like(sxbinary)
@@ -343,7 +344,6 @@ quit()
 '''
 ######################################
 
-
 # Create a VideoCapture object and read from input file
 # If the input is the camera, pass 0 instead of the video file name
 #cap = cv2.VideoCapture('challenge_video.mp4')
@@ -385,26 +385,26 @@ out.release()
 # Closes all the frames
 cv2.destroyAllWindows()
 
-
 '''
 # code to test with just one frame
 #originalFrame = cv2.imread("test_images/straight_lines1.jpg")
 #originalFrame = mpimg.imread("test_images/straight_lines1.jpg")
-#originalFrame = mpimg.imread("test_images/test2.jpg")
-originalFrame = cv2.imread("test_images/error2.jpg")
+originalFrame = cv2.imread("test_images/test2.jpg")
+#originalFrame = cv2.imread("test_images/error2.jpg")
 
 result = pipeline(originalFrame)
 
 cv2.imshow('result', result)
 #cv2.imwrite('output_images/final.jpg', result)
 cv2.waitKey(5000)
+'''
+
 
 
 '''
 
-'''
-#my_test_images = ["error1.jpg", "straight_lines1.jpg", "straight_lines2.jpg", "test1.jpg", "test2.jpg", "test3.jpg", "test4.jpg", "test5.jpg" ]
-my_test_images = ["test5.jpg" ]
+my_test_images = ["error1.jpg", "straight_lines1.jpg", "straight_lines2.jpg", "test1.jpg", "test2.jpg", "test3.jpg", "test4.jpg", "test5.jpg" ]
+#my_test_images = ["test5.jpg" ]
 
 for my_test_image in my_test_images:
     print(my_test_image)
