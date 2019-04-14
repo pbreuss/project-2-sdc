@@ -63,22 +63,47 @@ undistortedFrame = cv2.undistort(originalFrame, mtx, dist, None, mtx)
 In the function get_warped_binary we do all the steps recommended in Lesson 8, Gradients and Color spaces. This includes converting the image to HLS color space and using Sobel on the L channel in the x direction (x-gradient). Additionally we absolute the x derivative to accentuate lines away from horizontal. Finally we normalize sobelx values and we create a binary image by using some treshholds. Note: to view your binary image use ```  cv2.imshow('sxbinary', sxbinary*255) ``` (multiplay the image by 255, otherwise its black!)
 
 ```
-# Convert to HLS color space and separate the V channel
-hls = cv2.cvtColor(img, cv2.COLOR_RGB2HLS)
-l_channel = hls[:,:,1]
-s_channel = hls[:,:,2]
+# this function applies sobel and returns a binary imagae
+def abs_sobel_thresh(img, orient='x', thresh_min=0, thresh_max=255):
+    
+    # Convert to HLS color space and separate the V channel
+    hls = cv2.cvtColor(img, cv2.COLOR_RGB2HLS)
+    l_channel = hls[:,:,1]
 
-# Sobel x
-sobelx = cv2.Sobel(l_channel, cv2.CV_64F, 1, 0) # Take the derivative in x
-abs_sobelx = np.absolute(sobelx) # Absolute x derivative to accentuate lines away from horizontal
-scaled_sobel = np.uint8(255*abs_sobelx/np.max(abs_sobelx))
+    # Sobel x
+    sobelx = cv2.Sobel(l_channel, cv2.CV_64F, 1, 0) # Take the derivative in x
+    abs_sobelx = np.absolute(sobelx) # Absolute x derivative to accentuate lines away from horizontal
+    scaled_sobel = np.uint8(255*abs_sobelx/np.max(abs_sobelx))
 
-# Threshold x gradient
-sxbinary = np.zeros_like(scaled_sobel)
-sxbinary[(scaled_sobel >= sx_thresh[0]) & (scaled_sobel <= sx_thresh[1])] = 1
+    # Threshold x gradient
+    sxbinary = np.zeros_like(scaled_sobel)
+    sxbinary[(scaled_sobel >= thresh_min) & (scaled_sobel <= thresh_max)] = 1
+
+    # Return the result
+    return sxbinary
 ```
 
-The resulting image looks like this (x-gradient): ![sxbinary.jpg](./output_images/sxbinary.jpg)
+The resulting image after calling this function, the result looks like this (x-gradient): ![sxbinary.jpg](./output_images/sxbinary.jpg)
+
+
+Afterwards we do color treshholding. 
+```
+# this function applies color treshholding and returns a binary imagae
+def color_treshholding(img, min_l_channel=225, min_b_channel=155):
+    
+    l_channel = cv2.cvtColor(img, cv2.COLOR_BGR2LUV)[:,:,0]
+    b_channel = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)[:,:,2]
+    
+    # create a binary image
+    s_binary = np.zeros(img.shape[:2], dtype=np.uint8)
+    s_binary[((min_l_channel <= l_channel) | (min_b_channel <= b_channel))] = 1
+
+    # Return the result
+    return s_binary
+
+```
+
+The resulting image looks like this (x-gradient): ![sxbinary.jpg](./output_images/s_binary.jpg)
 
 After this we treshhold the s_channel (as recommended in Lessom 8)
 
