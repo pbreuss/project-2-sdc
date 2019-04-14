@@ -223,7 +223,8 @@ def color_treshholding(img, orient='x', thresh_min=0, thresh_max=255):
 
 
 # this function turns an undistorted image into a warped binary
-def get_warped_binary(img, s_thresh=(170, 255), sx_thresh=(20, 100)):
+def get_warped_binary(img, s_thresh=(0, 100), sx_thresh=(0, 100)):
+#def get_warped_binary(img, s_thresh=(170, 255), sx_thresh=(20, 100)):
 
     # apply sobel
     sxbinary = abs_sobel_thresh(img, sx_thresh[0], sx_thresh[1])
@@ -354,8 +355,8 @@ if (cap.isOpened()== False):
     print("Error opening video stream or file")
  
 # create video output
-#fourcc = cv2.VideoWriter_fourcc(*'MP4V')
-#out = cv2.VideoWriter('output_images/final.mp4', fourcc, 15, (1280, 720))
+fourcc = cv2.VideoWriter_fourcc(*'MP4V')
+out = cv2.VideoWriter('output_images/final.mp4', fourcc, 15, (1280, 720))
 
 # Read until video is completed
 while(cap.isOpened()):
@@ -367,7 +368,7 @@ while(cap.isOpened()):
 
         # Display the resulting frame
         cv2.imshow('Frame', result)
-        #out.write(result)
+        out.write(result)
 
         # Press Q on keyboard to  exit
         if cv2.waitKey(5) & 0xFF == ord('q'):
@@ -379,10 +380,11 @@ while(cap.isOpened()):
  
 # When everything done, release the video capture object
 cap.release()
-#out.release()
+out.release()
  
 # Closes all the frames
 cv2.destroyAllWindows()
+
 
 '''
 # code to test with just one frame
@@ -397,5 +399,22 @@ cv2.imshow('result', result)
 #cv2.imwrite('output_images/final.jpg', result)
 cv2.waitKey(5000)
 
+
+'''
+
+'''
+#my_test_images = ["error1.jpg", "straight_lines1.jpg", "straight_lines2.jpg", "test1.jpg", "test2.jpg", "test3.jpg", "test4.jpg", "test5.jpg" ]
+my_test_images = ["test5.jpg" ]
+
+for my_test_image in my_test_images:
+    print(my_test_image)
+    originalFrame = cv2.imread("test_images/"+my_test_image)
+
+    result = pipeline(originalFrame)
+
+    cv2.imshow('result', result)
+    #cv2.imwrite('output_images/final.jpg', result)
+    while cv2.waitKey(5) & 0xFF != ord('q'):
+        print(my_test_image)
 
 '''
