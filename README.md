@@ -103,18 +103,7 @@ def color_treshholding(img, min_l_channel=225, min_b_channel=155):
 
 ```
 
-The resulting image looks like this (x-gradient): ![sxbinary.jpg](./output_images/s_binary.jpg)
-
-After this we treshhold the s_channel (as recommended in Lessom 8)
-
-```
-# Threshold color channel
-s_binary = np.zeros_like(s_channel)
-s_binary[(s_channel >= s_thresh[0]) & (s_channel <= s_thresh[1])] = 1
-
-```
-
-The resulting image looks like this (s_channel): ![s_binary.jpg](./output_images/s_binary.jpg)
+The resulting image looks like this (x-gradient): ![sbinary.jpg](./output_images/s_binary.jpg)
 
 After this step we combine both binary images (x-gradient and s_channel)
 
