@@ -346,8 +346,8 @@ quit()
 
 # Create a VideoCapture object and read from input file
 # If the input is the camera, pass 0 instead of the video file name
-#cap = cv2.VideoCapture('challenge_video.mp4')
-cap = cv2.VideoCapture('project_video.mp4')
+cap = cv2.VideoCapture('challenge_video.mp4')
+#cap = cv2.VideoCapture('project_video.mp4')
 
 
 # Check if camera opened successfully
@@ -355,8 +355,8 @@ if (cap.isOpened()== False):
     print("Error opening video stream or file")
  
 # create video output
-fourcc = cv2.VideoWriter_fourcc(*'MP4V')
-out = cv2.VideoWriter('output_images/final.mp4', fourcc, 15, (1280, 720))
+#fourcc = cv2.VideoWriter_fourcc(*'MP4V')
+#out = cv2.VideoWriter('output_images/final.mp4', fourcc, 15, (1280, 720))
 
 # Read until video is completed
 while(cap.isOpened()):
@@ -368,7 +368,7 @@ while(cap.isOpened()):
 
         # Display the resulting frame
         cv2.imshow('Frame', result)
-        out.write(result)
+        #out.write(result)
 
         # Press Q on keyboard to  exit
         if cv2.waitKey(5) & 0xFF == ord('q'):
@@ -380,7 +380,7 @@ while(cap.isOpened()):
  
 # When everything done, release the video capture object
 cap.release()
-out.release()
+#out.release()
  
 # Closes all the frames
 cv2.destroyAllWindows()
